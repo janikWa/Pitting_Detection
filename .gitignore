@@ -1,2 +1,4 @@
+data/
+dataset/
 # Ignore virtual environment
 venv/
