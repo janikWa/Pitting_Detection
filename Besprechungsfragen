@@ -1,0 +1,20 @@
+Besprechungsanfrage 23.05.:
+- Anmerkungen weitere Vorgehensmöglichkeiten CNN
+  - Accuracy of 0.99 might indicate overfitting.
+  
+  - randomly rotate, resize and crop images
+  - preprocessing
+  - regularization
+  - dropout
+  - early stoppingh
+  - cross validation
+  - use other pretrained models, do not use a pretrained model
+  - batch normalization
+
+- Anmerkungen weitere Vorgehensmöglichkeiten "klassisch" model
+  - Datenerweiterung / Augmentierung
+  - Darstellung Ergebnisse
+
+- Sind Pretrained Modelle fine?
+- Nachfragen zu Video (Stream oder File), wenn stream dann wann
+- Welche Optimierungen könnten gewünscht sein (weniger Rechenleistung / Umgang mit weniger Daten)
