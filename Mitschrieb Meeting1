@@ -4,41 +4,43 @@ Bei vortrainierten Modelle: Vorteile (klar) aber auch Nachteile?!
 
 Logistische Regression - was ist das und wie kann ich es einsetzen?
 Nicht KI einsetzen um es halt einzusetzen, sondern es muss ein Mehrwert durch Einsatz von KI erzielt werden! - wenn nicht sinnvoll dann lieber klassisch ohne KI
-Training an sich eher unkritisch da man es ja nur einmal macht!
+Training an sich vom Zeitaufwand her eher unkritisch da man es ja nur einmal macht!
 
 Warum haben wir genau diese Lösung(en) ausgewählt! Begründen! Sauber Methodisch begründen!
 
-Wichtig zu verstehe warum KI teilweise noch nicht richtig einzug gefunden hat in industrie - weil KI immer mit Wahrscheinlichkeiten rechnet, Thema Zuverlässigkeit und Sicherheit - Robustheite und Taktzeit sind die allerwichtigsten Kriterien am Ende für den Prozess für den wir uns am Ende entscheiden!
+Wichtig zu verstehen, warum KI teilweise noch nicht richtig Einzug gefunden hat in Industrie - weil KI immer mit Wahrscheinlichkeiten rechnet, Thema Zuverlässigkeit und Sicherheit - Robustheite und Taktzeit sind die allerwichtigsten Kriterien am Ende für den Prozess für den wir uns am Ende entscheiden!
 
-Nächster Schritt: Datenpipeline erstellen bzw. Ergebnisauswertung (Daten rein geben in KI, dann in KI-Box rein und verarbeitung und dann schauen was am Ende rauskommt und als Plot, File, etc. ausgeben -> Datenpipeline)
+Nächster Schritt: Datenpipeline erstellen bzw. Ergebnisauswertung (Daten rein geben in KI, dann in KI-Box rein und Verarbeitung und dann schauen was am Ende rauskommt und als Plot, File, etc. ausgeben -> Datenpipeline)
 
-1.Phase: Wie gehen wir mit dem training um? Datenaufteilung: Trained Test Split und deswegen haben wir uns entschieden für Folgende Daten
+1.Phase: Wie gehen wir mit dem Training um? Datenaufteilung: Trained Test Split und deswegen haben wir uns entschieden für Folgende Daten:
 80/20 % Split Test und Validation aufteilen? Weniger Daten deshalb haben wir uns für 80/20% Aufteilung entschieden
 Datenpipeline, Test train split
 
 Daten werden nichtmehr gebatched bei Live durchführung während Präsentation, also auch daran denken ob es Live funktioniert
 
-Überlegen, wie wir Ergebnisse bewerten und wie kann man schön graphisch darstelllen -> Entscheidungsmatrix: Attribute, Verfahren, Plus oder Minus
-Verfahren auch live gegeneinander ausprobieren und vergeleichen!
+Überlegen, wie wir Ergebnisse bewerten und schön graphisch darstellen können -> Entscheidungsmatrix: Attribute, Verfahren, Plus oder Minus
 
-Kleine Anzeige für Live-Betrieb wäre schön!
-Wipe Programming - Chatgpd randed Bild mit Box die Grün ist und bei Fehler rot wird! Kleine Gui bedeutet was?
+Verfahren auch live gegeneinander ausprobieren und vergleichen!
 
-Vorgehen auch gleich Dokumentieren
+Kleine Anzeige für Live-Betrieb wäre schön, so oder ähnlich wie bei Vorstellung/ Video also Live Bild mit Kasten der bei hohen Pittingwahrscheinlichkeiten Rot wird und sonst grün ist!
+Wipe Programming - Chatgpd randed Bild mit Box die Grün ist und bei Fehler rot wird!
+Kleine Gui bedeutet was?
 
-Live Stream: Kamera aufbauen die uns Bilder aus dem Ordner ausliest, ausgibt und daraus Live Bild/ Stream machen! Stream ist simple Verarbeitung weil ich mich immer nur um ein einziges Bild kümmere pro Zeiteinheit
+Vorgehen auch gleich Dokumentieren und jeden Gedanke mitschreiben weil Methodik Hauptbewertungskriterium ist!
 
-Kleine Softwarearchitektur macht sinn, Kamera, Datenpipeline, Gui
+Live Stream: Kamera aufbauen, die uns Bilder aus dem Ordner ausliest, ausgibt und daraus Live Bild/ Stream machen! 
+Stream ist simple Verarbeitung weil sich immer nur um ein einziges Bild gekümmert wird pro Zeiteinheit
+
+Kleine Softwarearchitektur macht Sinn, Kamera, Datenpipeline, Gui
 
 Kein Spaghetticode!
 
-Augmentierung: Simlified Datensatz anschauen und überlegen was Sinn machen könnte
+Augmentierung: Simplified Datensatz anschauen und überlegen was Sinn machen könnte
 Rotation, Invarianz kann Sinn machen wenn richtig angewendet
 Einfacher Datensatz vs. Schwieriger Datensatz vergleichen und Analysieren
 Fully connected mit 8/9 Layer versuchen, Drop out Layer, 
 Google/ Forum/ ChatGPT
 Evtl. nach Lip suchen die genau das Problem der Augmentierung haben
-Beleuchtungsgradienten kann effektiv sein, Colourspaces von ABG zu HSV als Beispiel
-Hue ist Grundfarbe und Beleuchtungsgradienten/ Pixel werden unterschiedlich gemacht und bei Colourspace transformation kann man nur Hue verwenden und 
+Augmentierung per Beleuchtungsgradienten kann effektiv sein, Colourspaces von ABG zu HSV als Beispiel
+Hue ist Grundfarbe und Beleuchtungsgradienten/ Pixel werden unterschiedlich gemacht und bei Colourspace Transformation kann man nur Hue verwenden und 
 Hue Gradient in einen Value umrechnen
-Schauen im Internet nach Leuten die genau das gleiche oder ähnliche Problem hatten
