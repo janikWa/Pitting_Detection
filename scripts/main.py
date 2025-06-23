@@ -11,13 +11,15 @@ BASE = os.getcwd()
 # Streamlit app
 def main():
 
-    logo = r"/Users/janikwahrheit/Library/CloudStorage/OneDrive-Persönlich/01_Studium/01_Bachelor/06. SS_2025/Pitting_Detection/images/wbk.png"
-
     st.set_page_config(
         page_title="WBK Pitting Detection",
-        page_icon=logo,
+        page_icon= "random",
         layout="wide",
     )
+
+    logo = r"/Users/janikwahrheit/Library/CloudStorage/OneDrive-Persönlich/01_Studium/01_Bachelor/06. SS_2025/Pitting_Detection/images/wbk.png"
+
+
 
     st.markdown("""
     <style>
