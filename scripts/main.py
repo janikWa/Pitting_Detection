@@ -3,33 +3,21 @@ import cv2
 import numpy as np
 from PIL import Image
 import os 
+from utils import * 
 
 BASE = os.getcwd()
 
-#load best model 
-def load_model():
-    import joblib
-    model = joblib.load("model.pkl")
-    return model
-
-# dummy 
-def predict_pitting(model, frame):
-    return np.random.choice(["pitting", "no_pitting"])
-
-#box 
-def draw_prediction_box(frame, prediction):
-    height, width, _ = frame.shape
-    color = (0, 255, 0) if prediction == "no_pitting" else (255, 0, 0)
-    thickness = 4
-    box_start = (50, 50)
-    box_end = (width - 50, height - 50)
-    cv2.rectangle(frame, box_start, box_end, color, thickness)
-    cv2.putText(frame, prediction.upper(), (box_start[0], box_start[1] - 10),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
-    return frame
 
 # Streamlit app
 def main():
+
+    logo = r"/Users/janikwahrheit/Library/CloudStorage/OneDrive-Persönlich/01_Studium/01_Bachelor/06. SS_2025/Pitting_Detection/images/wbk.png"
+
+    st.set_page_config(
+        page_title="WBK Pitting Detection",
+        page_icon=logo,
+        layout="wide",
+    )
 
     st.markdown("""
     <style>
@@ -39,8 +27,6 @@ def main():
     }
     </style>
     """, unsafe_allow_html=True)
-
-    logo = r"/Users/janikwahrheit/Library/CloudStorage/OneDrive-Persönlich/01_Studium/01_Bachelor/06. SS_2025/Pitting_Detection/images/wbk.png"
 
 
     st.title("🔩Pitting Detection")
@@ -52,6 +38,8 @@ def main():
 
         user = st.text_input("E-Mail Adresse", help="E-Mail Adresse für automatische Bewarnung")
         run = st.toggle("Start Video Stream")
+
+    visualizer = st.pills("Visualisiertung", ["Bounding-Box", "Heatmap"], selection_mode="single", default="Bounding-Box")
 
     FRAME_WINDOW = st.image([])
 
