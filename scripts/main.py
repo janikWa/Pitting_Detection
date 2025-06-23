@@ -9,7 +9,7 @@ BASE = os.getcwd()
 #load best model 
 def load_model():
     import joblib
-    model = joblib.load("your_model.pkl")
+    model = joblib.load("model.pkl")
     return model
 
 # dummy 
