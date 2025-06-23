@@ -6,21 +6,17 @@ import os
 
 BASE = os.getcwd()
 
-# Load your model
+#load best model 
 def load_model():
-    # Replace this with your actual model loading code
     import joblib
-    model = joblib.load("your_model.pkl")  # Example for sklearn or similar
+    model = joblib.load("your_model.pkl")
     return model
 
-# Dummy prediction function
+# dummy 
 def predict_pitting(model, frame):
-    # Replace with actual prediction logic
-    # For example, use a CNN model with a frame or ROI as input
-    # Here, we return a dummy output
     return np.random.choice(["pitting", "no_pitting"])
 
-# Draw colored bounding box
+#box 
 def draw_prediction_box(frame, prediction):
     height, width, _ = frame.shape
     color = (0, 255, 0) if prediction == "no_pitting" else (255, 0, 0)
@@ -47,7 +43,7 @@ def main():
     logo = r"/Users/janikwahrheit/Library/CloudStorage/OneDrive-Persönlich/01_Studium/01_Bachelor/06. SS_2025/Pitting_Detection/images/wbk.png"
 
 
-    st.title("Pitting Detection")
+    st.title("🔩Pitting Detection")
     st.logo(logo, icon_image=logo, size="large")
 
     #model = load_model()‚
