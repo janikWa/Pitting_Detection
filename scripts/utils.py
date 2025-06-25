@@ -6,6 +6,14 @@ from datetime import datetime
 from pathlib import Path
 import mimetypes
 import os
+import matplotlib.pyplot as plt 
+import numpy as np
+import os
+import cv2
+import torch
+import matplotlib.pyplot as plt 
+from torchvision import models, transforms
+
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
@@ -15,10 +23,15 @@ LOGO = os.path.join(BASE_DIR, "images", "wbk.png")
 
 
 #load best model 
-def load_model():
-    import joblib
-    model = joblib.load("model.pkl")
-    return model
+def load_model(transformation: str = None): 
+    model = models.resnet18(pretrained=False)
+    model.fc = torch.nn.Linear(model.fc.in_features, 2)  # 2 classes
+    filename = f"resnet18_pitting_not_simplified_{transformation}.pth" if transformation else "resnet18_pitting_not_simplified.pth"
+    load_path = os.path.join(BASE_DIR, "models", filename)
+    model.load_state_dict(torch.load(load_path))
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device) 
+    return model 
 
 # dummy 
 def predict_pitting(model, frame):
@@ -103,4 +116,59 @@ def send_warning(machine):
 
     print("Mail gesendet")
     print()
+
+
+def get_heatmap_overlay(model, img_tensor):
+    gradients = []
+
+    if img_tensor.shape != (1, 3, 224, 224):
+        if img_tensor.shape == (3, 224, 224):
+            image_tensor_batched = img_tensor.unsqueeze(0)
+        else:
+            raise ValueError(f"Unerwartete Bildgröße: {img_tensor.shape}")
+    else:
+        image_tensor_batched = img_tensor
+
+    mean = torch.tensor([0.485, 0.456, 0.406])
+    std = torch.tensor([0.229, 0.224, 0.225])
+    unnormalized_image = img_tensor * std[:, None, None] + mean[:, None, None]
+    image_np = unnormalized_image.permute(1, 2, 0).numpy()
+
+    def save_gradient(grad):
+        gradients.append(grad)
+
+    activations = []
+    def forward_hook(module, input, output):
+        activations.append(output)
+        output.register_hook(save_gradient)
+
+    hook = model.layer4.register_forward_hook(forward_hook)
+
+    output = model(image_tensor_batched)
+    pred_class = output.argmax(dim=1).item()
+
+    model.zero_grad()
+    output[0, pred_class].backward()
+
+    grads_val = gradients[0][0].cpu().detach().numpy()
+    acts_val = activations[0][0].cpu().detach().numpy()
+
+    weights = np.mean(grads_val, axis=(1, 2))
+    cam = np.zeros(acts_val.shape[1:], dtype=np.float32)
+
+    for i, w in enumerate(weights):
+        cam += w * acts_val[i, :, :]
+
+    cam = np.maximum(cam, 0)
+    cam = cam - cam.min()
+    cam = cam / cam.max()
+    cam = cv2.resize(cam, (224, 224))
+
+    heatmap = cv2.applyColorMap(np.uint8(255 * cam), cv2.COLORMAP_JET)
+    image_uint8 = (image_np * 255).astype(np.uint8)
+    overlay = heatmap * 0.4 + image_uint8 * 0.6
+    overlay = np.uint8(overlay)
+
+    hook.remove()
+    return overlay, pred_class
 
