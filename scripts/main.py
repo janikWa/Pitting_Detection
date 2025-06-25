@@ -5,12 +5,23 @@ from PIL import Image
 import os 
 from utils import * 
 import torchvision.transforms as transforms
+import time 
 
-BASE = os.getcwd()
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
+RAW = os.path.join(BASE_DIR, "images", "cache", "raw.png")
+HEATMAP = os.path.join(BASE_DIR, "images", "cache", "heatmap.png")
 
 
 # Streamlit app
 def main():
+
+    
+    EMAIL_COOLDOWN = 300
+    last_email_time = 0
+
+    model = load_model("medium")
 
     transform = transforms.Compose([
         transforms.Resize(256),
@@ -45,8 +56,6 @@ def main():
     st.title("🔩Pitting Detection")
     st.logo(logo, icon_image=logo, size="large")
 
-    #model = load_model()‚
-
     with st.sidebar: 
 
         user = st.text_input("E-Mail Adresse", help="E-Mail Adresse für automatische Bewarnung")
@@ -55,25 +64,47 @@ def main():
     visualizer = st.pills("Visualisiertung", ["Bounding-Box", "Heatmap"], selection_mode="single", default="Bounding-Box")
 
     col1, col2, col3 = st.columns([1, 2, 1])
+
     with col2:
         FRAME_WINDOW = st.image([], use_container_width=True)
+        prediction_text = st.empty()  # nur einmal vor der Schleife
 
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0)  # einmal vor der Schleife öffnen
+
     while run:
         ret, frame = cap.read()
         if not ret:
             break
 
-        frame = cv2.resize(frame, (640, 480))
-        prediction = predict_pitting(None, frame)
-        frame = draw_prediction_box(frame, prediction)
+        img_pil = Image.fromarray(frame)
+        img_tensor = transform(img_pil)
+        overlay, prediction = get_heatmap_overlay(model, img_tensor)
 
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        if prediction == 1:
+            label = "Pitting erkannt!"
+            current_time = time.time()
+            if current_time - last_email_time > EMAIL_COOLDOWN:
+                cv2.imwrite(RAW, frame)
+                cv2.imwrite(HEATMAP, overlay)
+                send_warning(2)
+                last_email_time = current_time
+
+        else:
+            label = "Kein Pitting erkannt"
+
+        frame = cv2.cvtColor(overlay, cv2.COLOR_BGR2RGB)
+        #frame = cv2.resize(frame, (640, 480))
 
         with col2:
             FRAME_WINDOW.image(frame)
+            prediction_text.markdown(
+                f"<h4 style='text-align:center; color:{'red' if prediction == 1 else 'green'}'>{label}</h4>",
+                unsafe_allow_html=True
+            )
 
-    cap.release()
+    cap.release() 
+
 
 if __name__ == '__main__':
     main()
+
