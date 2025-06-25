@@ -9,8 +9,8 @@ import os
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
-RAW = os.path.join(BASE_DIR, "images", "raw.png")
-HEATMAP = os.path.join(BASE_DIR, "images", "heatmap.png")
+RAW = os.path.join(BASE_DIR, "images", "cache", "raw.png")
+HEATMAP = os.path.join(BASE_DIR, "images", "cache", "heatmap.png")
 LOGO = os.path.join(BASE_DIR, "images", "wbk.png")
 
 
@@ -104,4 +104,3 @@ def send_warning(machine):
     print("Mail gesendet")
     print()
 
-send_warning(5)

@@ -43,9 +43,11 @@ def main():
 
     visualizer = st.pills("Visualisiertung", ["Bounding-Box", "Heatmap"], selection_mode="single", default="Bounding-Box")
 
-    FRAME_WINDOW = st.image([])
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        FRAME_WINDOW = st.image([], use_container_width=True)
 
-    cap = cv2.VideoCapture(0)  
+    cap = cv2.VideoCapture(0)
     while run:
         ret, frame = cap.read()
         if not ret:
@@ -56,7 +58,9 @@ def main():
         frame = draw_prediction_box(frame, prediction)
 
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        FRAME_WINDOW.image(frame)
+
+        with col2:
+            FRAME_WINDOW.image(frame)
 
     cap.release()
 
