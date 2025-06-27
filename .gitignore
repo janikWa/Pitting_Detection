@@ -2,3 +2,5 @@ data/
 dataset/
 dataset_simplified/ 
 models/
+venv/*
+venv/
