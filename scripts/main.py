@@ -12,6 +12,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
 RAW = os.path.join(BASE_DIR, "images", "cache", "raw.png")
 HEATMAP = os.path.join(BASE_DIR, "images", "cache", "heatmap.png")
+VIDEO = os.path.join(BASE_DIR, "data", "deployment_videos", "pitting_video.mp4")
 
 
 # Streamlit app
@@ -21,7 +22,7 @@ def main():
     EMAIL_COOLDOWN = 300
     last_email_time = 0
 
-    model = load_model("medium")
+    model = load_model("light")
 
     transform = transforms.Compose([
         transforms.Resize(256),
@@ -58,51 +59,83 @@ def main():
 
     with st.sidebar: 
 
-        user = st.text_input("E-Mail Adresse", help="E-Mail Adresse für automatische Bewarnung")
         run = st.toggle("Start Video Stream")
 
     visualizer = st.pills("Visualisiertung", ["Bounding-Box", "Heatmap"], selection_mode="single", default="Bounding-Box")
 
     col1, col2, col3 = st.columns([1, 2, 1])
+    FRAME_WINDOW = col2.image([], use_container_width=True)
+    prediction_text = col2.empty()
 
-    with col2:
-        FRAME_WINDOW = st.image([], use_container_width=True)
-        prediction_text = st.empty()  # nur einmal vor der Schleife
+    # Setup video source
+    if visualizer == "Bounding-Box":
+        # video
+        cap = cv2.VideoCapture(VIDEO)   
+    else:
+        cap = cv2.VideoCapture(0)  # Webcam
 
-    cap = cv2.VideoCapture(0)  # einmal vor der Schleife öffnen
+    last_email_time = 0
+    EMAIL_COOLDOWN = 60  # seconds
+    #run = True
 
     while run:
         ret, frame = cap.read()
         if not ret:
             break
 
-        img_pil = Image.fromarray(frame)
-        img_tensor = transform(img_pil)
-        overlay, prediction = get_heatmap_overlay(model, img_tensor)
+        if visualizer == "Bounding-Box":
+            # coordinates for boundign box 
+            x, y, w, h = 1100, 450, 200, 200
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-        if prediction == 1:
-            label = "Pitting erkannt!"
-            current_time = time.time()
-            if current_time - last_email_time > EMAIL_COOLDOWN:
-                cv2.imwrite(RAW, frame)
-                cv2.imwrite(HEATMAP, overlay)
-                send_warning(2)
-                last_email_time = current_time
+            roi = frame[y:y+h, x:x+w]
+            img_pil = Image.fromarray(cv2.cvtColor(roi, cv2.COLOR_BGR2RGB))
+            img_tensor = transform(img_pil)
 
-        else:
-            label = "Kein Pitting erkannt"
+            overlay, prediction = get_heatmap_overlay(model, img_tensor)
 
-        frame = cv2.cvtColor(overlay, cv2.COLOR_BGR2RGB)
-        #frame = cv2.resize(frame, (640, 480))
+            if prediction == 1:
+                label = "Pitting erkannt!"
+                current_time = time.time()
+                if current_time - last_email_time > EMAIL_COOLDOWN:
+                    cv2.imwrite(RAW, roi)
+                    cv2.imwrite(HEATMAP, overlay)
+                    send_warning(2)
+                    last_email_time = current_time
+            else:
+                label = "Kein Pitting erkannt"
 
-        with col2:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             FRAME_WINDOW.image(frame)
             prediction_text.markdown(
                 f"<h4 style='text-align:center; color:{'red' if prediction == 1 else 'green'}'>{label}</h4>",
                 unsafe_allow_html=True
             )
 
-    cap.release() 
+        else:  # Heatmap
+            img_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            img_tensor = transform(img_pil)
+            overlay, prediction = get_heatmap_overlay(model, img_tensor)
+
+            if prediction == 1:
+                label = "Pitting erkannt!"
+                current_time = time.time()
+                if current_time - last_email_time > EMAIL_COOLDOWN:
+                    cv2.imwrite(RAW, frame)
+                    cv2.imwrite(HEATMAP, overlay)
+                    send_warning(2)
+                    last_email_time = current_time
+            else:
+                label = "Kein Pitting erkannt"
+
+            frame = cv2.cvtColor(overlay, cv2.COLOR_BGR2RGB)
+            FRAME_WINDOW.image(frame)
+            prediction_text.markdown(
+                f"<h4 style='text-align:center; color:{'red' if prediction == 1 else 'green'}'>{label}</h4>",
+                unsafe_allow_html=True
+            )
+
+    cap.release()
 
 
 if __name__ == '__main__':

@@ -30,7 +30,8 @@ def load_model(transformation: str = None):
     load_path = os.path.join(BASE_DIR, "models", filename)
     model.load_state_dict(torch.load(load_path))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device) 
+    model.to(device)
+    model.eval() 
     return model 
 
 # dummy 
