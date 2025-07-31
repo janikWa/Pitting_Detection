@@ -2,8 +2,9 @@ Dieser Ordner enthält alle Codefiles und bearbeiteten Daten der klassischen Mod
 Nicht enthalten sind die Datensätze. Diese sind um den Code einwandfrei nutzen zu können in einem Ordner auf gleicher Ebene wie der pitting_detection
 ordner abzulegen. Die Namen der enthaltenen Ordner wurden nicht angepasst.
 
-Da die Dateien innerhalb der enthaltenen Ordner sind für die Abgabe zu groß, daher sind diese über folgenden Link zum Download verfügbar:
-
+Da die Dateien innerhalb der Ordner "finishedData" und "resultVideos" für die Abgabe zu groß sind, sind diese über folgend Links zum Download verfügbar: (Der Inhalt wird unten erklärt.)
+- https://1drv.ms/f/c/1a05d9782416429a/Eq4ZAKBvQKhIsx1qCfTQ1QUBXmGVzNwNJ3EgyKZwomQcew?e=1p73MJ
+- https://1drv.ms/f/c/1a05d9782416429a/Ehd8odgsPLNLm-2kU6YKYD4BHqXYxtvuOMQcVoBd6IqPaQ?e=DHyfFh
 
 Die Files NotebookModelTraining und NotebookTrainedModels sind besonders wichtig und enthalten den Großteil des Codes.
 filterBadPictures war lediglich die Datei, in der der Algorithmus zur Hintergrunderkennung erarbeitet wurde. 
