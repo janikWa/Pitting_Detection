@@ -1,3 +1,4 @@
+Max hat sich um das klassische ML gekümmert
 Dieser Ordner enthält alle Codefiles und bearbeiteten Daten der klassischen Modelle (Gradient Boosting und Random Forest).
 Nicht enthalten sind die Datensätze. Diese sind um den Code einwandfrei nutzen zu können in einem Ordner auf gleicher Ebene wie der pitting_detection
 ordner abzulegen. Die Namen der enthaltenen Ordner wurden nicht angepasst.
