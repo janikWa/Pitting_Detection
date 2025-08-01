@@ -14,7 +14,6 @@ import torch
 import matplotlib.pyplot as plt 
 from torchvision import models, transforms
 
-
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
 RAW = os.path.join(BASE_DIR, "images", "cache", "raw.png")
